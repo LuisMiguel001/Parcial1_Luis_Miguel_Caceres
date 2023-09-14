@@ -1,13 +1,17 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Parcial1_Luis_Miguel_Caceres.Data;
+using Microsoft.EntityFrameworkCore;
+using Parcial1_Luis_Miguel_Caceres.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
+
+var ConStr = builder.Configuration.GetConnectionString("ConStr");
+
+builder.Services.AddDbContext<Context>(Options => Options.UseSqlite(ConStr));
 
 var app = builder.Build();
 
