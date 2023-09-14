@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
+using Parcial1_Luis_Miguel_Caceres.BLL;
 using Parcial1_Luis_Miguel_Caceres.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ builder.Services.AddServerSideBlazor();
 var ConStr = builder.Configuration.GetConnectionString("ConStr");
 
 builder.Services.AddDbContext<Context>(Options => Options.UseSqlite(ConStr));
+
+builder.Services.AddScoped<IngresosBLL>();
 
 var app = builder.Build();
 
