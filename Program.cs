@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
+using Parcial1_Luis_Miguel_Caceres;
 using Parcial1_Luis_Miguel_Caceres.BLL;
 using Parcial1_Luis_Miguel_Caceres.DAL;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,11 @@ var ConStr = builder.Configuration.GetConnectionString("ConStr");
 builder.Services.AddDbContext<Context>(Options => Options.UseSqlite(ConStr));
 
 builder.Services.AddScoped<IngresosBLL>();
+
+void ConfigureServices(IServiceCollection services)
+{
+	services.AddRadzenComponents();
+}
 
 var app = builder.Build();
 

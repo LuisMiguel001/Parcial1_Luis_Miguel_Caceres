@@ -1,0 +1,163 @@
+﻿@page "/ingreso"
+@page "/ingreso/{IngresoId:int}"
+@inject IngresosBLL IngresosBLL
+@inject NotificationService notificationService
+
+<EditForm Model="IngresoId" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>Registro de Ingresos</h3>
+            </div>
+            <div class="card-body">
+                @*BuscarId*@
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                    <div class="input-group mb-3">
+                        <InputNumber @bind-Value="ingresos.IngresosId" class="form-control" aria-describedby="buscarButton" />
+                        <button @onclick="Buscar" class="btn btn-outline-primary" type="button" id="buscarButton">
+                            <i class="oi oi-magnifying-glass" />
+                        </button>
+                    </div>
+                </div>
+
+                @*IngresosId*@
+                <div class="mb-3">
+                    <label class="form-label">IngresosId</label>
+                    <InputNumber @bind-Value="ingresos.IngresosId" class="form-control" />
+                    <ValidationMessage For="@(() => ingresos.IngresosId)" />
+                </div>
+
+                @*Fecha*@
+                <div class="mb-3">
+                    <label class="form-label">Fecha</label>
+                    <InputDate @bind-Value="ingresos.Fecha" class="form-control" />
+                    <ValidationMessage For="@(() => ingresos.Fecha)" />
+                </div>
+
+                @*IngresosId*@
+                <div class="mb-3">
+                    <label class="form-label">IngresosId</label>
+                    <InputNumber @bind-Value="ingresos.IngresosId" class="form-control" />
+                    <ValidationMessage For="@(() => ingresos.IngresosId)" />
+                </div>
+
+                @*Concepto*@
+                <div class="mb-3">
+                    <label class="form-label">Concepto</label>
+                    <InputText @bind-Value="ingresos.Concepto" class="form-control" />
+                    <ValidationMessage For="@(() => ingresos.Concepto)" />
+                </div>
+
+                @*Monto*@
+                <div class="mb-3">
+                    <label class="form-label">Monto</label>
+                    <InputNumber @bind-Value="ingresos.Monto" class="form-control" />
+                    <ValidationMessage For="@(() => ingresos.Monto)" />
+                </div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-center">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary" @onclick="Nuevo"> <i class="oi oi-file" /> Nuevo</button>
+                    <button type="submit" class="btn btn-success"> <i class="oi oi-document" /> Guardar</button>
+                    <button type="button" class="btn btn-danger" @onclick="Eliminar"><i class="oi oi-trash" /> Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public int IngresoId { get; set; }
+    public Ingresos ingresos { get; set; } = new Ingresos();
+
+	protected override void OnInitialized()
+	{
+		if (IngresoId > 0)
+		{
+			this.ingresos.IngresosId = this.IngresoId;
+			Buscar();
+		}
+	}
+
+	public void Buscar()
+	{
+		var ingresoEncontrada = IngresosBLL.Buscar(ingresos.IngresosId);
+		if (ingresoEncontrada != null)
+		{
+			this.ingresos = ingresoEncontrada;
+		}
+		else
+		{
+			notificationService.ShowNotification(
+			titulo: "Error de Busqueda",
+			mensaje: "Registro no encontrado",
+			NotificationSeverity.Error);
+		}
+	}
+
+	public void Nuevo()
+	{
+		this.ingresos = new Ingresos();
+	}
+
+	public void Guardar()
+	{
+		if (!Validar())
+		{
+			notificationService.ShowNotification(
+				titulo: "Validacion",
+				mensaje: "Error, Revise los campos",
+				NotificationSeverity.Error);
+			return;
+		}
+
+		var guardo = IngresosBLL.Guardar(this.ingresos);
+
+		if (guardo)
+		{
+			notificationService.ShowNotification(
+				titulo: "Exito",
+				mensaje: "Guardo correctamente!",
+				NotificationSeverity.Success);
+			Nuevo();
+		}
+
+		else
+		{
+			notificationService.ShowNotification(
+				titulo: "Error",
+				mensaje: "Ocurrio un error y no fue posible guardad",
+				NotificationSeverity.Error);
+		}
+	}
+
+	public void Eliminar()
+	{
+		Buscar();
+		if (IngresosBLL.Eliminar(this.ingresos))
+		{
+			notificationService.ShowNotification(
+				titulo: "Exito",
+				mensaje: "Eliminado con Exito!",
+				NotificationSeverity.Success);
+			Nuevo();
+		}
+		else
+		{
+			notificationService.ShowNotification(
+				titulo: "Error",
+				mensaje: "Ocurrio un error y no fue posible eliminar",
+				NotificationSeverity.Error);
+		}
+	}
+
+	public bool Validar()
+	{
+		return true;
+	}
+}
