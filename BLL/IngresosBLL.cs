@@ -26,14 +26,22 @@ public class IngresosBLL
 		return cantidad > 0;
 	}
 
-	public bool Modificar(Ingresos ingreso)
-	{
-		_context.Update(ingreso);
-		int cantidad = _context.SaveChanges();
-		return cantidad > 0;
-	}
+    public bool Modificar(Ingresos ingreso)
+    {
+        var entidadExistente = _context.Ingresos.FirstOrDefault(s => s.IngresosId == ingreso.IngresosId);
+        if (entidadExistente != null)
+        {
+            entidadExistente.Fecha = ingreso.Fecha;
+            entidadExistente.Concepto = ingreso.Concepto;
+            entidadExistente.Monto = ingreso.Monto;
 
-	public bool Guardar(Ingresos ingreso)
+            int cantidad = _context.SaveChanges();
+            return cantidad > 0;
+        }
+        return false;
+    }
+
+    public bool Guardar(Ingresos ingreso)
 	{
 		if (!Existe(ingreso.IngresosId))
 			return Insertar(ingreso);
@@ -41,14 +49,19 @@ public class IngresosBLL
 			return Modificar(ingreso);
 	}
 
-	public bool Eliminar(Ingresos ingreso)
-	{
-		_context.Ingresos.Remove(ingreso);
-		int cantidad = _context.SaveChanges();
-		return cantidad > 0;
-	}
+    public bool Eliminar(Ingresos ingreso)
+    {
+        var entidadExistente = _context.Ingresos.Find(ingreso.IngresosId);
+        if (entidadExistente != null)
+        {
+            _context.Ingresos.Remove(entidadExistente);
+            int cantidad = _context.SaveChanges();
+            return cantidad > 0;
+        }
+        return false;
+    }
 
-	public Ingresos? Buscar(int ingresoId)
+    public Ingresos? Buscar(int ingresoId)
 	{
 		return _context.Ingresos
 			.AsNoTracking()

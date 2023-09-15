@@ -1,0 +1,99 @@
+﻿@page "/c_ingresos"
+@inject IngresosBLL ingresosBLL
+
+<EditForm Model="lista">
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h4>Consultas de Ingresos</h4>
+            </div>
+
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <InputText @bind-Value="Nombre" class="form-control" aria-describedby="buscarButton" />
+                    <button @onclick="Buscar" class="btn btn-outline-primary" type="button" id="buscarButton">
+                        <i class="oi oi-magnifying-glass" />
+                    </button>
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="number" @bind="IngresoId" class="form-control" placeholder="IngresoId" />
+                    <input type="text" @bind="Concepto" class="form-control" placeholder="Concepto" />
+                    <input type="date" @bind="FechaInicio" class="form-control" />
+                    <input type="date" @bind="FechaFin" class="form-control" />
+                    <button @onclick="Buscar" class="btn btn-outline-primary" type="button" id="buscarButton">
+                        <i class="oi oi-magnifying-glass" />
+                    </button>
+                </div>
+
+                <table class="table table-responsive table-condensed table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>IngresoId</th>
+                            <th>Fecha</th>
+                            <th>Concepto</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ingresos in lista)
+                        {
+                            <tr>
+                                <td>@ingresos.IngresosId</td>
+                                <td>@ingresos.Fecha</td>
+                                <td>@ingresos.Concepto</td>
+                                <td>@ingresos.Monto</td>
+                                <td><a class="btn btn-outline-primary" href="ingreso/@ingresos.IngresosId">Ver</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3"><strong>Total:</strong></td>
+                            <td>@(MontoTotal)</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="card-footer">
+                <div class="form-row justify-content-sm-between" aria-orientation="vertical">
+                    <div class="col-3">
+                        <label for="CantidaRegistro" class="col-form-label"><strong>Filas</strong>&nbsp;</label>
+                        <input id="CantidaRegistro" @bind-value="@conteo" disabled class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+@code
+{
+    public string Nombre { get; set; } = "";
+    public int conteo { get; set; } = 0;
+    public decimal MontoTotal = 0;
+    public List<Ingresos> lista { get; set; } = new List<Ingresos>();
+    public int IngresoId { get; set; }
+    public string Concepto { get; set; } = "";
+    public DateTime FechaInicio { get; set; }
+    public DateTime FechaFin { get; set; }
+
+    public void Buscar()
+    {
+        lista = ingresosBLL.GetList(ingreso =>
+            (IngresoId == 0 || ingreso.IngresosId == IngresoId) &&
+            (string.IsNullOrWhiteSpace(Concepto) || ingreso.Concepto.Contains(Concepto)) &&
+            (FechaInicio == DateTime.MinValue || ingreso.Fecha >= FechaInicio) &&
+            (FechaFin == DateTime.MinValue || ingreso.Fecha <= FechaFin)
+        );
+
+        conteo = lista.Count();
+        MontoTotal = lista.Sum(ingreso => ingreso.Monto);
+    }
+
+
+}
+

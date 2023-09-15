@@ -24,6 +24,7 @@ namespace Parcial1_Luis_Miguel_Caceres.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Concepto")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Fecha")

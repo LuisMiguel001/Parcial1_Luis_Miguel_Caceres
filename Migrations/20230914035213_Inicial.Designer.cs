@@ -11,7 +11,7 @@ using Parcial1_Luis_Miguel_Caceres.DAL;
 namespace Parcial1_Luis_Miguel_Caceres.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230914015823_Inicial")]
+    [Migration("20230914035213_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -27,6 +27,7 @@ namespace Parcial1_Luis_Miguel_Caceres.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Concepto")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Fecha")

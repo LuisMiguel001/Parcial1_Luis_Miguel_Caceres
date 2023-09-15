@@ -18,10 +18,10 @@ builder.Services.AddDbContext<Context>(Options => Options.UseSqlite(ConStr));
 
 builder.Services.AddScoped<IngresosBLL>();
 
-void ConfigureServices(IServiceCollection services)
-{
-	services.AddRadzenComponents();
-}
+builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<TooltipService>();
+builder.Services.AddScoped<ContextMenuService>();
 
 var app = builder.Build();
 

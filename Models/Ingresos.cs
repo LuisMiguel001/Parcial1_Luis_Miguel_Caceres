@@ -8,9 +8,12 @@ public class Ingresos
 
 	public int IngresosId { get; set; }
 
+	[Required(ErrorMessage ="La Fecha es requerido")]
 	public DateTime Fecha { get; set; }
 
-	public string? Concepto { get; set; }
+    [Required(ErrorMessage = "El Concepto es requerido")]
+    public string? Concepto { get; set; }
 
-	public Decimal Monto { get; set; }
+    [Required(ErrorMessage = "El Monto es requerido")]
+    public Decimal Monto { get; set; }
 }

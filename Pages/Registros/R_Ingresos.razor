@@ -36,13 +36,6 @@
                     <ValidationMessage For="@(() => ingresos.Fecha)" />
                 </div>
 
-                @*IngresosId*@
-                <div class="mb-3">
-                    <label class="form-label">IngresosId</label>
-                    <InputNumber @bind-Value="ingresos.IngresosId" class="form-control" />
-                    <ValidationMessage For="@(() => ingresos.IngresosId)" />
-                </div>
-
                 @*Concepto*@
                 <div class="mb-3">
                     <label class="form-label">Concepto</label>
@@ -60,9 +53,9 @@
 
             <div class="card-footer d-flex justify-content-center">
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-primary" @onclick="Nuevo"> <i class="oi oi-file" /> Nuevo</button>
-                    <button type="submit" class="btn btn-success"> <i class="oi oi-document" /> Guardar</button>
-                    <button type="button" class="btn btn-danger" @onclick="Eliminar"><i class="oi oi-trash" /> Eliminar</button>
+					<button type="button" class="btn btn-outline-primary" @onclick="Nuevo"> <i class="oi oi-file" /> Nuevo</button>
+					<button type="submit" class="btn btn-outline-success"> <i class="oi oi-document" /> Guardar</button>
+					<button type="button" class="btn btn-outline-danger" @onclick="Eliminar"><i class="oi oi-trash" /> Eliminar</button>
                 </div>
             </div>
         </div>
@@ -71,9 +64,9 @@
 </EditForm>
 
 @code {
-    [Parameter]
-    public int IngresoId { get; set; }
-    public Ingresos ingresos { get; set; } = new Ingresos();
+	[Parameter]
+	public int IngresoId { get; set; }
+	public Ingresos ingresos { get; set; } = new Ingresos();
 
 	protected override void OnInitialized()
 	{
@@ -103,16 +96,16 @@
 	public void Nuevo()
 	{
 		this.ingresos = new Ingresos();
+		notificationService.ShowNotification(
+				titulo: "Vacio",
+				mensaje: "Nuevo Registro",
+				NotificationSeverity.Info);
 	}
 
 	public void Guardar()
 	{
 		if (!Validar())
 		{
-			notificationService.ShowNotification(
-				titulo: "Validacion",
-				mensaje: "Error, Revise los campos",
-				NotificationSeverity.Error);
 			return;
 		}
 
@@ -158,6 +151,33 @@
 
 	public bool Validar()
 	{
-		return true;
+		//if (ingresos.Fecha != DateTime.MinValue)
+		//{
+		//	notificationService.ShowNotification(
+		//		titulo: "Validación",
+		//		mensaje: "La Fecha debe tener un valor",
+		//		NotificationSeverity.Error);
+		//	return false;
+		//}
+		if (string.IsNullOrEmpty(ingresos.Concepto))
+		{
+			notificationService.ShowNotification(
+				titulo: "Validación",
+				mensaje: "El campo Concepto es obligatorio.",
+				NotificationSeverity.Error);
+			return false;
+		}
+		if(ingresos.Monto <= 0)
+		{
+			notificationService.ShowNotification(
+				titulo: "Validación",
+				mensaje: "El Monto debe ser mayor que 0",
+				NotificationSeverity.Error);
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 }
